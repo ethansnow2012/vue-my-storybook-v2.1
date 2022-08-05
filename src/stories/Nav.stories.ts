@@ -1,0 +1,75 @@
+import NavLayout from '../components/NavLayout.vue';
+import NavItem from '../components/NavItem.vue';
+import MyNav from '../components/Nav.vue';
+import type { Story } from '@storybook/vue3'
+import fetchCall from '../dataService/FetchCall'
+import { reactive, watchEffect, ref, watch, toRaw } from 'vue';
+import type {NavLayoutRootData} from '../dataTypes/MyTypes'
+
+
+export default {
+  title: 'Example/layout',
+  component: [MyNav, NavLayout, NavItem],
+  argTypes: {
+  },
+};
+
+const Template: Story  = (args ) => ({
+  components: { MyNav, NavLayout, NavItem },
+  setup() {
+    // This reactive object do self organize. this can be extracted to be a composable.
+    const rootData = reactive<{data:NavLayoutRootData|null, loopingState:'waiting'|'fine'}>({data:null, loopingState: 'fine'})
+    fetchCall.navLayout().then((data)=>{
+      rootData.data = data
+    })
+    watch(rootData, ()=>{
+
+      let isIdentical = true
+      if(!rootData.data) return
+      
+      const _rootData = JSON.parse(JSON.stringify(toRaw(rootData.data)));
+
+      const newNavLayoutRootData = _rootData;
+      const selectable = newNavLayoutRootData?.navRightTopButtons?.inputInitObject.map((x,ii)=>{
+        return {id:x.textAdd+ii, text: x.textAdd}
+      })
+      newNavLayoutRootData?.navRightTopButtons?.inputInitObject.forEach((el)=>{
+        el.inputSchema.forEach((el2)=>{
+          if(el2.hook && el2.type=='text' && el2.hook.action ==='meta'){
+            if(el[el2.hook.payload]!==el2.value){
+              isIdentical = false
+              el[el2.hook.payload]=el2.value
+            }
+          }
+          if(el2.type=='multiselect'){
+            if(JSON.stringify(el2.selectable)!=JSON.stringify(selectable)){
+              isIdentical = false
+              el2.selectable = selectable
+            }
+            
+          }
+        })
+      })
+      
+      if(!isIdentical){
+        console.log('not Identical')
+        rootData.data = newNavLayoutRootData
+      }else{
+        console.log('identical')
+      }
+      
+    })
+    return { args, rootData }
+  },
+  template: `
+  <NavLayout >
+    <MyNav v-bind="args" :rootData="rootData"/>
+  </NavLayout>
+    `,
+})
+
+
+export const Primary = Template.bind({});
+Primary.args = {}
+
+
