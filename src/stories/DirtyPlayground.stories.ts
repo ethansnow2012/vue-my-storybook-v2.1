@@ -4,7 +4,6 @@ import GChildren from '../components/GChildren.vue';
 import type { Story } from '@storybook/vue3'
 import {ref} from 'vue'
 
-import {  } from "../stories/Library.stories";
 export default {
   title: 'My dirty playGround',
   component: [GParent, GChildren],
