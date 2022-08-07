@@ -63,7 +63,7 @@ export default {
     </div>
   </div>
   <div>
-    <div>Test Case 2:</div>
+    <div>Test: dragable div background:</div>
     <div className="l-block-wrapper" v-auto-animate="{ duration: 500 }" >
         <div v-for="block in blockDataRepresent2" className="l-block" :key="block.id">
             {{block.id}}
