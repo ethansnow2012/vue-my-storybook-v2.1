@@ -47,7 +47,7 @@ onMounted(()=>{
 
 </script>
 <template>
-  <div>aD3</div>
+  <div>D3 trying:</div>
   <svg ref="selfSvg" :width="width" :height="height"></svg>
 </template>
 
