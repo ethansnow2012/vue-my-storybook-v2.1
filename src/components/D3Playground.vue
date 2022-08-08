@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
 import * as d3 from "d3";
+import D3Case_1 from "./D3Case_1.vue"
 
 const selfSvg = ref(null)
 const width = 300;
@@ -49,6 +50,7 @@ onMounted(()=>{
 <template>
   <div>D3 trying:</div>
   <svg ref="selfSvg" :width="width" :height="height"></svg>
+  <D3Case_1/>
 </template>
 
 <style scoped module></style>
