@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, watchEffect } from "vue";
 import * as d3 from "d3";
 const width = 300;
 const height = 200;
@@ -18,26 +18,33 @@ const xForceFn = d3.forceX()
 const yForceFn = d3.forceY()
 console.log('hierarchy root:', root, links, nodes)
 console.log('xForce', xForceFn)
+const mountedFlag = ref(false)
+const tickNum = ref(1)
+let simulation = null
 
-onMounted(()=>{
-  const simulation = d3.forceSimulation(nodes)
+watchEffect(()=>{
+  
+  if(mountedFlag.value){
+    simulation = d3.forceSimulation(nodes)
     .force("link", linkForceFn)
     .force("charge", chargeForceFn)
     .force("x", xForceFn)
     .force("y", yForceFn)
-    //.stop()
-    //.tick(ticked);//ticks
+    .stop()
+    .tick(tickNum.value);
+  
   const svg = d3.select(selfSvg.value)
-          .append("svg")
-          .attr("viewBox", [-width / 2, -height / 2, width, height]);
-  const link = svg.append("g")
+    .attr("viewBox", [-width / 2, -height / 2, width, height])
+    .select("g");
+
+  const link = svg.select("g#line")
       .attr("stroke", "#999")
       .attr("stroke-opacity", 0.6)
     .selectAll("line")
     .data(links)
     .join("line");
 
-  const node = svg.append("g")
+  const node = svg.select("g#node")
       .attr("fill", "#fff")
       .attr("stroke", "#000")
       .attr("stroke-width", 1.5)
@@ -56,14 +63,40 @@ onMounted(()=>{
   node
       .attr("cx", d => d.x)
       .attr("cy", d => d.y);
+  
+  }
+  
 
 })
 
-
+onMounted(()=>{
+  mountedFlag.value = true
+})
+//const aa = ()=>{debugger;console.log('simulation', simulation); simulation.restart()}
 </script>
 <template>
+  
   <div>D3 Case 1:</div>
-  <div ref="selfSvg"></div>
+  <div  :className="$style['svg-holder']">
+    <svg ref="selfSvg" >
+      <g>
+        <g id="line"></g>
+        <g id="node"></g>
+      </g>
+    </svg>
+  </div>
+  <div>
+    <div><span>tickNum: {{tickNum}}</span></div>
+    <button @click="()=>{tickNum += 1}">+</button>
+    <button @click="()=>{tickNum -= 1}">-</button>
+    <!-- <button @click="()=>{ aa() }">restart</button>   -->
+    
+  </div>
 </template>
 
-<style scoped module></style>
+<style scoped module>
+.svg-holder{
+  width: 300px;
+  height: 200px
+}
+</style>
