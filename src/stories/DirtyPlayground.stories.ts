@@ -2,6 +2,7 @@
 // import GParent from '../components/GParent.vue';
 // import GChildren from '../components/GChildren.vue';
 import DragableDivBgPlayGround from '../components/DragableDivBgPlayGround.vue';
+import D3Playground_ from "../components/D3Playground.vue"
 import type { Story } from '@storybook/vue3'
 import {ref} from 'vue'
 
@@ -39,11 +40,23 @@ const Template2: Story  = (args ) => ({
     </div>
     `,
 })
+const Template3: Story  = (args ) => ({
+  components: { D3Playground_ },
+  setup() {
+    
+    return {  }
+  },
+  template: `
+    <div>
+      <D3Playground_></D3Playground_>
+    </div>
+    `,
+})
 
 //export const Case1 = Template.bind({});
 //Case1.args = {}
 
-export const DragableDivBg = Template2.bind({});
-DragableDivBg.args = {}
+export const D3Playground = Template3.bind({});
+D3Playground.args = {}
 
 
