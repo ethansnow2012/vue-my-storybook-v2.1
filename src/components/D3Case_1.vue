@@ -269,7 +269,7 @@ const input = (ev)=>{
     <button @click="()=>{tickNum += 1}">+</button>
     <button @click="()=>{tickNum -= 1}">-</button>
     <button @click="()=>{ restart() }">restart</button>  
-    <div><span>tickNum(with restart): </span><span><input type="range" @input="(ev)=>{input(ev)}"></span></div>
+    <div><span>tickNum(with restart): </span><span><input type="range" @change="(ev)=>{input(ev)}"></span></div>
   </div>
 </template>
 
