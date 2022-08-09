@@ -80,8 +80,13 @@ onMounted(()=>{
   mountedFlag.value = true
 })
 const restart = ()=>{
-  init()
   tickNum.value = 1
+  init()
+}
+const input = (ev)=>{
+  const newInt = parseInt(ev.target.value)
+  tickNum.value = newInt
+  init()
 }
 </script>
 <template>
@@ -100,7 +105,7 @@ const restart = ()=>{
     <button @click="()=>{tickNum += 1}">+</button>
     <button @click="()=>{tickNum -= 1}">-</button>
     <button @click="()=>{ restart() }">restart</button>  
-    
+    <div><span>tickNum(with restart): </span><span><input type="range" @input="(ev)=>{input(ev)}"></span></div>
   </div>
 </template>
 
