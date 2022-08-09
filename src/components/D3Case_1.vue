@@ -6,7 +6,13 @@ const height = 200;
 
 const selfSvg = ref(null)
 
-const dataInit = {
+type NodeA = {
+  "name": string,
+  "children"?: NodeA[],
+  "value"?: number
+}
+
+const dataInit : NodeA = {
   "name": "flare",
   "children": [
     {
@@ -164,13 +170,15 @@ const dataInit = {
 }
 const data = ref(dataInit)
 
-const root = ref (null)
-const links = ref (null)
-const nodes = ref (null)
-const linkForceFn = ref (null)
-const chargeForceFn = ref (null)
-const xForceFn = ref (null)
-const yForceFn = ref (null)
+
+
+const root = ref<d3.HierarchyNode<unknown>|null> (null)
+const links = ref<d3.SimulationLinkDatum<d3.SimulationNodeDatum>[]| d3.HierarchyLink<unknown> |null> (null)
+const nodes = ref<d3.HierarchyNode<unknown>[]|null> (null)
+const linkForceFn = ref<d3.ForceLink<d3.SimulationNodeDatum, d3.SimulationLinkDatum<d3.SimulationNodeDatum>>|null> (null)
+const chargeForceFn = ref<d3.ForceManyBody<d3.SimulationNodeDatum>|null> (null)
+const xForceFn = ref<d3.ForceX<d3.SimulationNodeDatum>|null> (null)
+const yForceFn = ref<d3.ForceY<d3.SimulationNodeDatum>|null> (null)
 
 
 const mountedFlag = ref(false)
@@ -182,9 +190,9 @@ watchEffect(()=>{
     console.log('effect 1-2')
     initTrigger.value += 1
     root.value = d3.hierarchy(data.value);
-    links.value = root.value.links();
-    nodes.value = root.value.descendants();
-
+    links.value = root.value.links() as d3.SimulationLinkDatum<d3.SimulationNodeDatum>[];
+    nodes.value = root.value.descendants() as d3.HierarchyNode<unknown>[]
+    
     linkForceFn.value = d3.forceLink(links.value).id(d => d.id).distance(0).strength(1)
     chargeForceFn.value = d3.forceManyBody().strength(-50)
     xForceFn.value = d3.forceX() 
@@ -194,9 +202,10 @@ watchEffect(()=>{
   }
 })
 watchEffect(()=>{
+  if(!links.value) return
   if(mountedFlag.value){
     console.log('effect 2-2')
-    simulation = d3.forceSimulation(nodes.value)
+    simulation = d3.forceSimulation(nodes.value as d3.SimulationNodeDatum[])
     .force("link", linkForceFn.value)
     .force("charge", chargeForceFn.value)
     .force("x", xForceFn.value)
@@ -212,7 +221,7 @@ watchEffect(()=>{
       .attr("stroke", "#999")
       .attr("stroke-opacity", 0.6)
     .selectAll("line")
-    .data(links.value)
+    .data(links.value as unknown[]) // unknown: don't want to mess with this
     .join("line");
 
   const node = svg.select("g#node")
@@ -220,7 +229,7 @@ watchEffect(()=>{
       .attr("stroke", "#000")
       .attr("stroke-width", 1.5)
     .selectAll("circle")
-    .data(nodes.value)
+    .data(nodes.value as unknown[]) // unknown: don't want to mess with this
     .join("circle")
       .attr("fill", d => d.children ? null : "#000")
       .attr("stroke", d => d.children ? null : "#fff")
