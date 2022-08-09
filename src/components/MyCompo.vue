@@ -17,6 +17,7 @@
                 @click="(ev)=>{
                     ev.stopPropagation()
                 }"
+            :key="inputItem.id"
             >
             <div v-if="inputItem.type==='text'" className="c-root-expendable-i_text" >
                 <label :htmlFor="inputItem.id">{{inputItem.label}}</label>
@@ -39,7 +40,7 @@
                 <div className="c-root-expendable-i-selectbox-wrapper">
                     <div className="c-root-expendable-i-selectbox-inner">
                         <div className="c-root-expendable-i-selectbox" :style="{marginTop:multiselectMap.get(inputItem).top}">
-                            <div v-for="tag in inputItem.selected" className="c-root-tags">
+                            <div v-for="tag in inputItem.selected" className="c-root-tags" :key="tag.id">
                                 <div className="c-root-tags-inner">
                                     {{tag.text}}
                                 </div>
@@ -59,6 +60,7 @@
                                 v-for="tag in inputItem.selectable.filter(x=> inputItem.selected.filter(y=>y.id===x.id).length==0)" 
                                 className="c-root-tags"
                                 :id="tag.id"
+                                :key="tag.id"
                                 @click="(ev)=>{onTagAdd(multiselectMap.get(inputItem), inputItem.id, ev)}"
                                 >
                                 <div className="c-root-tags-inner">

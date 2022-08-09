@@ -22,3 +22,9 @@ export interface NavLayoutRootData  {
         inputInitObject: initObjType[]
     }
 }
+export type NodeA = {
+    "name": string,
+    "color"?: string,
+    "children"?: NodeA[],
+    "value"?: number
+}

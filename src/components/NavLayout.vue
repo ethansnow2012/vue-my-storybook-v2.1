@@ -20,8 +20,11 @@ export default {
 
 <style scoped>
 .l-layout {
+  position: relative;
   width: 100%;
   height: 700px;
+  padding-right: 150px;
+  box-sizing: border-box;
 }
 .l-layout > *{
   margin-left: auto;

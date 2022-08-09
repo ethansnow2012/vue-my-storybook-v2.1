@@ -31,6 +31,9 @@ export default {
 </script>
 <style scoped>
 .nav-wrapper{
+    position: absolute;
+    top:0;
+    right: 0;
     width: max-content;
     margin-left: auto;
     display: flex;

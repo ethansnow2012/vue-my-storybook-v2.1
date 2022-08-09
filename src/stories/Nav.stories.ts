@@ -1,6 +1,7 @@
 import NavLayout from '../components/NavLayout.vue';
 import NavItem from '../components/NavItem.vue';
 import MyNav from '../components/Nav.vue';
+import RelationGraph from '../components/RelationGraph.vue';
 import type { Story } from '@storybook/vue3'
 import fetchCall from '../dataService/FetchCall'
 import { reactive, watchEffect, ref, watch, toRaw } from 'vue';
@@ -9,13 +10,13 @@ import type {NavLayoutRootData} from '../dataTypes/MyTypes'
 
 export default {
   title: 'Example/layout',
-  component: [MyNav, NavLayout, NavItem],
+  component: [MyNav, NavLayout, NavItem, RelationGraph],
   argTypes: {
   },
 };
 
 const Template: Story  = (args ) => ({
-  components: { MyNav, NavLayout, NavItem },
+  components: { MyNav, NavLayout, NavItem, RelationGraph },
   setup() {
     // This reactive object do self organize. this can be extracted to be a composable.
     const rootData = reactive<{data:NavLayoutRootData|null, loopingState:'waiting'|'fine'}>({data:null, loopingState: 'fine'})
@@ -63,6 +64,9 @@ const Template: Story  = (args ) => ({
   },
   template: `
   <NavLayout >
+    <div>
+      <RelationGraph :data="rootData.data"></RelationGraph>
+    </div>
     <MyNav v-bind="args" :rootData="rootData"/>
   </NavLayout>
     `,
