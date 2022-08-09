@@ -8,9 +8,19 @@ const selfSvg = ref(null)
 
 type NodeA = {
   "name": string,
+  "color"?: string,
   "children"?: NodeA[],
   "value"?: number
 }
+let _count = 0
+const newNodeOne : ()=>NodeA = ()=>{
+  _count++
+  return {
+    "name": `New Guy here ${_count}`,
+    "color": "red"
+  }
+}
+
 
 const dataInit : NodeA = {
   "name": "flare",
@@ -231,7 +241,7 @@ watchEffect(()=>{
     .selectAll("circle")
     .data(nodes.value as unknown[]) // unknown: don't want to mess with this
     .join("circle")
-      .attr("fill", d => d.children ? null : "#000")
+      .attr("fill", d => d.data.color? d.data.color: (d.children ? null : "#000") )
       .attr("stroke", d => d.children ? null : "#fff")
       .attr("r", 3.5);
   link
@@ -261,6 +271,9 @@ const input = (ev)=>{
   tickNum.value = newInt
   initTrigger.value +=1
 }
+const addNewNode = ()=>{
+  data.value.children?.push(newNodeOne())
+}
 </script>
 <template>
   
@@ -278,6 +291,7 @@ const input = (ev)=>{
     <button @click="()=>{tickNum += 1}">+</button>
     <button @click="()=>{tickNum -= 1}">-</button>
     <button @click="()=>{ restart() }">restart</button>  
+    <button @click="()=>{ addNewNode() }">New Node</button>  
     <div><span>tickNum(with restart): </span><span><input type="range" @change="(ev)=>{input(ev)}"></span></div>
   </div>
 </template>
