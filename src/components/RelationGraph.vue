@@ -2,14 +2,52 @@
 import { ref, computed, onMounted, watchEffect, toRef } from "vue";
 import type { NodeA, initObjType, NavLayoutRootData } from '../dataTypes/MyTypes'
 import * as d3 from "d3";
+
+
+
+interface myLink {
+  source: {
+    data: any,
+    //depth: number,
+    //height: number,
+    //children?: NodeA[]
+    //parent?: NodeA,
+  },
+  target: {
+    data: any,
+    //depth: number,
+    //height: number,
+    //children?: NodeA[]
+    //parent?: NodeA,
+  }
+}
+
 const width = 600;
 const height = 600;
 
 const getInitObjToNodeA = (initObjTypes:initObjType[]) :NodeA => {
     return {
+       id: 'root',
        name: 'root',
-       children: initObjTypes.map((x):NodeA =>{ return { name:x.textAdd} })
+       children: initObjTypes.map((x):NodeA =>{ return { id: x.id, name:x.textAdd} })
     }
+}
+const convertRoot2Links = (initObjTypes:initObjType[], node: any): (any)[] =>{
+  console.log('convertRoot2Links')
+  const multiselectInputs = initObjTypes
+    .map((x)=>{ 
+      let aa = x.inputSchema.filter(y=>y.type==="multiselect")
+      aa.forEach(y=>y.parentId = x.id)
+      return aa
+    }).flat(1)
+  return multiselectInputs.map((x)=>{
+    return x.selected?.map((_selected)=>{
+      return {
+        source: node.indexOf(node.filter(y=>y.data.id==x.parentId)[0]) ,//{data: },
+        target: node.indexOf(node.filter(y=>y.data.id===_selected.id)[0])//{data: }
+      }
+    })
+  }).flat(1).filter(x=>x)
 }
 
 const props = defineProps<{data:navLayoutRootData}>()
@@ -17,7 +55,7 @@ const selfSvg = ref(null)
 //const data = ref(props.data.data)
 
 const root = ref<d3.HierarchyNode<unknown>|null> (null)
-const links = ref<d3.SimulationLinkDatum<d3.SimulationNodeDatum>[]| d3.HierarchyLink<unknown> |null> (null)
+const links = ref<myLink[] |null> (null)
 const nodes = ref<d3.HierarchyNode<unknown>[]|null> (null)
 const linkForceFn = ref<d3.ForceLink<d3.SimulationNodeDatum, d3.SimulationLinkDatum<d3.SimulationNodeDatum>>|null> (null)
 const chargeForceFn = ref<d3.ForceManyBody<d3.SimulationNodeDatum>|null> (null)
@@ -33,11 +71,16 @@ watchEffect(()=>{
   if(mountedFlag.value && props.data){
     console.log('effect 1-2', props)
     initTrigger.value += 1
-    root.value = d3.hierarchy(getInitObjToNodeA(props.data.navRightTopButtons.inputInitObject));
-    links.value = root.value.links() as d3.SimulationLinkDatum<d3.SimulationNodeDatum>[];
+    const inputInitObject = props.data.navRightTopButtons.inputInitObject
+    root.value = d3.hierarchy(getInitObjToNodeA(inputInitObject))
+
+    //console.log('convertRoot2Links rtn: ', convertRoot2Links(inputInitObject))
     nodes.value = root.value.descendants() as d3.HierarchyNode<unknown>[]
+    links.value =  convertRoot2Links(inputInitObject, nodes.value)// //root.value.links() as d3.SimulationLinkDatum<d3.SimulationNodeDatum>[];
+    console.log('links', links.value, root.value.links())
     
-    linkForceFn.value = d3.forceLink(links.value).id(d => d.id).distance(0).strength(1)
+    
+    linkForceFn.value = d3.forceLink(links.value).distance(0).strength(1)//
     chargeForceFn.value = d3.forceManyBody().strength(-50)
     xForceFn.value = d3.forceX() 
     yForceFn.value = d3.forceY()

@@ -23,6 +23,7 @@ export interface NavLayoutRootData  {
     }
 }
 export type NodeA = {
+    "id":string,
     "name": string,
     "color"?: string,
     "children"?: NodeA[],

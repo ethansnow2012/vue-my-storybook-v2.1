@@ -32,7 +32,7 @@ const Template: Story  = (args ) => ({
 
       const newNavLayoutRootData = _rootData;
       const selectable = newNavLayoutRootData?.navRightTopButtons?.inputInitObject.map((x,ii)=>{
-        return {id:x.textAdd+ii, text: x.textAdd}
+        return {id:x.id, text: x.textAdd}
       })
       newNavLayoutRootData?.navRightTopButtons?.inputInitObject.forEach((el)=>{
         el.inputSchema.forEach((el2)=>{
