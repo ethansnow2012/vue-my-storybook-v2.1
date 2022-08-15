@@ -3,6 +3,7 @@
 // import GChildren from '../components/GChildren.vue';
 import DragableDivBgPlayGround from '../components/DragableDivBgPlayGround.vue';
 import D3Playground_ from "../components/D3Playground.vue"
+import HalfRangeDiv_ from "../components/HalfRangeDiv.vue"
 import type { Story } from '@storybook/vue3'
 import {ref} from 'vue'
 
@@ -52,6 +53,18 @@ const Template3: Story  = (args ) => ({
     </div>
     `,
 })
+const Template4: Story  = (args ) => ({
+  components: { HalfRangeDiv_ },
+  setup() {
+    
+    return {  }
+  },
+  template: `
+    <div>
+      <HalfRangeDiv_></HalfRangeDiv_>
+    </div>
+    `,
+})
 
 //export const Case1 = Template.bind({});
 //Case1.args = {}
@@ -59,4 +72,5 @@ const Template3: Story  = (args ) => ({
 export const D3Playground = Template3.bind({});
 D3Playground.args = {}
 
+export const HalfRangeDiv = Template4.bind({});
 
