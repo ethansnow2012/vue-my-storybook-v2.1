@@ -45,7 +45,7 @@ const Template: Story  = (args ) => ({
           if(el2.type=='multiselect'){
             if(JSON.stringify(el2.selectable)!=JSON.stringify(selectable)){
               isIdentical = false
-              el2.selectable = selectable
+              el2.selectable = selectable.filter((ss)=>{ return ss.id!=el.id})
             }
             
           }
