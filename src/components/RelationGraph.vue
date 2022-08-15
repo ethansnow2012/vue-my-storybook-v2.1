@@ -75,7 +75,7 @@ watchEffect(()=>{
     root.value = d3.hierarchy(getInitObjToNodeA(inputInitObject))
 
     //console.log('convertRoot2Links rtn: ', convertRoot2Links(inputInitObject))
-    nodes.value = root.value.descendants() as d3.HierarchyNode<unknown>[]
+    nodes.value = root.value.descendants().filter(x=>x.data.id!=='root') as d3.HierarchyNode<unknown>[]
     links.value =  convertRoot2Links(inputInitObject, nodes.value)// //root.value.links() as d3.SimulationLinkDatum<d3.SimulationNodeDatum>[];
     console.log('links', links.value, root.value.links())
     

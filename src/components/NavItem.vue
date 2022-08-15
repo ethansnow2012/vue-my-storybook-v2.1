@@ -31,7 +31,7 @@ export default {
 </script>
 
 <template>
-  <div className="l-item" ref="selRef" v-auto-animate="{ duration: 500 }">   
+  <div className="l-item" ref="selRef" v-auto-animate="{ duration: 100 }">   
     {{inputInitObject.shortName??"Comp."}}
     <div 
       className="l-item-hover" 
