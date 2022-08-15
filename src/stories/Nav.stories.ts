@@ -24,9 +24,10 @@ const Template: Story  = (args ) => ({
       rootData.data = data
     })
     watch(rootData, ()=>{
-
+      
       let isIdentical = true
       if(!rootData.data) return
+      console.log('recalc')
       
       const _rootData = JSON.parse(JSON.stringify(toRaw(rootData.data)));
 
@@ -39,13 +40,16 @@ const Template: Story  = (args ) => ({
           if(el2.hook && el2.type=='text' && el2.hook.action ==='meta'){
             if(el[el2.hook.payload]!==el2.value){
               isIdentical = false
+              console.log('not isIdentical 1')
               el[el2.hook.payload]=el2.value
             }
           }
           if(el2.type=='multiselect'){
-            if(JSON.stringify(el2.selectable)!=JSON.stringify(selectable)){
+            const _selectable = selectable.filter((ss)=>{ return ss.id!=el.id})
+            if(JSON.stringify(el2.selectable)!=JSON.stringify(_selectable)){
               isIdentical = false
-              el2.selectable = selectable.filter((ss)=>{ return ss.id!=el.id})
+              console.log('not isIdentical 2')
+              el2.selectable = _selectable
             }
             
           }

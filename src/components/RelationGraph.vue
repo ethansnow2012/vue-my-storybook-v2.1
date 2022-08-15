@@ -71,7 +71,7 @@ watchEffect(()=>{
   if(mountedFlag.value && props.data){
     console.log('effect 1-2', props)
     initTrigger.value += 1
-    const inputInitObject = props.data.navRightTopButtons.inputInitObject
+    const inputInitObject = props.data.navRightTopButtons.inputInitObject // reactivity here
     root.value = d3.hierarchy(getInitObjToNodeA(inputInitObject))
 
     //console.log('convertRoot2Links rtn: ', convertRoot2Links(inputInitObject))
